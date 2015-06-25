@@ -1,20 +1,23 @@
 # {%= name %} {%= badge("fury") %}
 
+
 {%= include("install-global") %}
+
+## Usage
+
+```
+{%= partial("usage.md") %}
+```
 
 {%= partial("description.md") %}
 
-# API
-
-{%= partial("api.md") %}
-
-# Author
+## Author
 
 * Vittorio Zaccaria
 
-# License
+## License
 {%= copyright() %}
-{%= license() %}
+Released under the BSD License.
 
 ***
 

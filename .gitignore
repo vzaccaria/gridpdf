@@ -2,3 +2,4 @@ node_modules
 lib
 makefile
 api.md
+/index.js

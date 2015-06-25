@@ -12,17 +12,26 @@ generateProject(_ => {
     _.compileFiles(...([command, product, dir].concat(deps)))
   }
 
+  _.verb = (verbfile, deps) => {
+    var command = (_) => `./node_modules/.bin/verb`
+    var product = (_) => `./readme.md`
+    _.compileFiles(...([command, product, verbfile].concat(deps)))
+  }
+
   _.collectSeq("all", _ => {
     _.collect("build", _ => {
       _.babel("src/*.js")
+      _.verb("./verbfile.js", "docs/*.md")
+      _.cmd("mkdir -p ./man")
+      _.cmd("pandoc -s -f markdown -t man readme.md > ./man/gridpdf.1")
     })
-    _.cmd("cp ./lib/index.js ./index.js")
-    _.cmd("./node_modules/.bin/markdox ./index.js -o docs/api.md")
+    _.cmd("((echo '#!/usr/bin/env node') && cat ./lib/index.js) > index.js", "./lib/index.js")
+    _.cmd("chmod +x ./index.js")
   })
 
   _.collect("test", _ => {
     _.cmd("make all")
-    _.cmd("node ./index.js")
+    _.cmd("./node_modules/.bin/mocha ./lib/test.js")
   })
 
   _.collect("update", _ => {

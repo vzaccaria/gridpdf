@@ -1,67 +1,46 @@
+#!/usr/bin/env node
 "use strict";
 
+var _require = require("docopt");
+
+var docopt = _require.docopt;
+
+var _ = require("lodash");
 var fs = require("fs");
-var PDFDocument = require("pdfkit");
 
-function cm(v) {
+var _require2 = require("./lib/lib");
+
+var grid = _require2.grid;
+
+var getOptions = function (doc) {
     "use strict";
-    return 28.34645669291339 * v;
-}
-
-var foo = function (r, c, filename) {
-    "use strict";
-    var w = cm(14.5);
-    var h = cm(0.5 * r);
-    var rw = w / c;
-    var rh = h / r;
-    var doc = new PDFDocument({
-        size: [w, h],
-        autoFirstPage: false
-    });
-
-    function doThis(lambda) {
-        var i = 0;
-        var j = 0;
-        for (i = 0; i < r; i++) {
-            for (j = 0; j < c; j++) {
-                lambda(i, j);
-            }
-        }
-    }
-
-    doc.pipe(fs.createWriteStream(filename));
-
-    doc.fontSize(8);
-
-    doThis(function (i, j) {
-        if (j === 0) {
-            var pad = 0.1;
-            doc.text(i + 1, rw * pad, rh * i + rh * pad * 2, {
-                width: w,
-                height: h
-            });
-        }
-    });
-
-    doThis(function (i, j) {
-        if (j % 4 === 0) {
-            doc.lineWidth(0.4).moveTo(rw * j, rh * i).lineTo(rw * j, rh * (i + 1)).dash(0).stroke();
-        }
-    });
-
-    doThis(function (i, j) {
-        doc.lineWidth(0.4).rect(rw * j, rh * i, rw, rh).dash(0.5, {
-            space: 3
-        }).stroke();
-    });
-
-    doc.end();
+    var o = docopt(doc);
+    console.log(o);
+    var nc = parseInt(o.NC) || 40;
+    var nr = parseInt(o.NR) || 15;
+    var w = parseInt(o.WIDTH) || 14.5;
+    var help = o["--help"] || false;
+    return {
+        help: help, nc: nc, nr: nr, w: w
+    };
 };
 
-foo(5, 40, "./griglia_esercizi_70x5.pdf");
-foo(10, 40, "./griglia_esercizi_70x10.pdf");
-foo(15, 40, "./griglia_esercizi_70x15.pdf");
-foo(20, 40, "./griglia_esercizi_70x20.pdf");
-foo(25, 40, "./griglia_esercizi_70x25.pdf");
-foo(30, 40, "./griglia_esercizi_70x30.pdf");
-foo(60, 40, "./griglia_esercizi_70x60.pdf");
+var doc = fs.readFileSync(__dirname + "/docs/usage.md", "utf8");
+
+var main = function () {
+    "use strict";
+
+    var _getOptions = getOptions(doc);
+
+    var help = _getOptions.help;
+    var nc = _getOptions.nc;
+    var nr = _getOptions.nr;
+    var w = _getOptions.w;
+
+    if (!help) {
+        var fn = "grid_ese_" + nr + "x" + nc + ".pdf";
+        grid(nr, nc, fn, w);
+    }
+};
+
+main();
