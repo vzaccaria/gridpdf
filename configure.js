@@ -22,8 +22,8 @@ generateProject(_ => {
     _.collect("build", _ => {
       _.babel("src/*.js")
       _.verb("./verbfile.js", "docs/*.md")
-      _.cmd("mkdir -p ./man")
-      _.cmd("pandoc -s -f markdown -t man readme.md > ./man/gridpdf.1")
+      _.cmd("mkdir -p ./man/man1")
+      _.cmd("pandoc -s -f markdown -t man readme.md > ./man/man1/gridpdf.1")
     })
     _.cmd("((echo '#!/usr/bin/env node') && cat ./lib/index.js) > index.js", "./lib/index.js")
     _.cmd("chmod +x ./index.js")

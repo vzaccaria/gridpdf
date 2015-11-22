@@ -1,65 +1,76 @@
-var fs = require("fs")
-var PDFDocument = require("pdfkit")
+"use strict";
+
+var fs = require("fs");
+var PDFDocument = require("pdfkit");
+var _ = require("lodash");
 
 function cm(v) {
-    "use strict"
+    "use strict";
     return 28.34645669291339 * v;
 }
 
-
-var grid = (r, c, filename, width) => {
-    "use strict"
-    var w = cm(width)
-    var h = cm(.5 * r)
-    var rw = w / c
-    var rh = h / r
+var grid = function(r, c, filename, width, opts) {
+    "use strict";
+    var w = cm(width);
+    var h = cm(0.5 * r);
+    var rw = w / c;
+    var rh = h / r;
     var doc = new PDFDocument({
         size: [w, h],
         autoFirstPage: false
-    })
+    });
+
+    var griddot = _.get(opts, "griddot", false);
 
     function doThis(lambda) {
-        var i = 0
-        var j = 0
+        var i = 0;
+        var j = 0;
         for (i = 0; i < r; i++) {
             for (j = 0; j < c; j++) {
-                lambda(i, j)
+                lambda(i, j);
             }
         }
     }
 
-    doc.pipe(fs.createWriteStream(filename))
+    doc.pipe(fs.createWriteStream(filename));
 
-    doc.fontSize(8)
+    doc.fontSize(8);
 
-    doThis((i, j) => {
-        if (j === 0) {
-            var pad = 0.1
-            doc.text(i + 1, (rw * pad), (rh * i) + (rh * pad * 2), {
-                width: w,
-                height: h
-            })
-        }
-    })
+    if (!griddot) {
+        doThis(function(i, j) {
+            if (j === 0) {
+                var pad = 0.1;
+                doc.text(i + 1, rw * pad, rh * i + rh * pad * 2, {
+                    width: w,
+                    height: h
+                });
+            }
+        });
 
-    doThis((i, j) => {
-        if (j % 4 === 0) {
-            doc.lineWidth(.4).moveTo(rw * j, rh * i).lineTo(rw * j, rh * (i + 1)).dash(0).stroke()
-        }
-    })
+        doThis(function(i, j) {
+            if (j % 4 === 0) {
+                doc.lineWidth(0.4).moveTo(rw * j, rh * i).lineTo(rw * j, rh * (i + 1)).dash(0).stroke();
+            }
+        });
 
-    doThis((i, j) => {
-        doc.lineWidth(.4).rect(rw * j, rh * i, rw, rh).dash(.5, {
-            space: 3
-        }).stroke()
-    })
+        doThis(function(i, j) {
+            doc.lineWidth(0.4).rect(rw * j, rh * i, rw, rh).dash(0.5, {
+                space: 3
+            }).stroke();
+        });
+    } else {
+        doThis(function(i, j) {
+            doc.lineWidth(0.1).rect(rw * j, rh * i, rw, rh).dash(0.5, {
+                space: 1
+            }).stroke();
+        })
+    }
 
-
-    doc.end()
+    doc.end();
 };
 
 module.exports = {
-	grid
+    grid: grid
 }
 
 //foo(5, 40, "./griglia_esercizi_70x5.pdf")
@@ -69,3 +80,4 @@ module.exports = {
 //foo(25, 40, "./griglia_esercizi_70x25.pdf")
 //foo(30, 40, "./griglia_esercizi_70x30.pdf")
 //foo(60, 40, "./griglia_esercizi_70x60.pdf")
+;

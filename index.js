@@ -20,8 +20,9 @@ var getOptions = function (doc) {
     var nr = parseInt(o.NR) || 15;
     var w = parseInt(o.WIDTH) || 14.5;
     var help = o["--help"] || false;
+    var griddot = o["--griddot"] || false;
     return {
-        help: help, nc: nc, nr: nr, w: w
+        help: help, nc: nc, nr: nr, w: w, griddot: griddot
     };
 };
 
@@ -36,10 +37,16 @@ var main = function () {
     var nc = _getOptions.nc;
     var nr = _getOptions.nr;
     var w = _getOptions.w;
+    var griddot = _getOptions.griddot;
 
     if (!help) {
-        var fn = "grid_ese_" + nr + "x" + nc + ".pdf";
-        grid(nr, nc, fn, w);
+        if (griddot) {
+            var fn = "griddot_ese_" + nr + "x" + nc + ".pdf";
+            grid(nr, nc, fn, w, { griddot: true });
+        } else {
+            var fn = "grid_ese_" + nr + "x" + nc + ".pdf";
+            grid(nr, nc, fn, w);
+        }
     }
 };
 

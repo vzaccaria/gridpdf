@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "No name given yet",
   "main": "index.js",
+  "bin": {
+    "gridpdf": "./index.js"
+  },
   "scripts": {
     "test": "make test"
   },
@@ -19,13 +22,14 @@
   "dependencies": {
     "bluebird": "^2.9.14",
     "debug": "^2.1.3",
+    "lodash.get": "^3.7.0",
     "markdox": "^0.1.8",
     "pdfkit": "^0.7.1"
   },
   "devDependencies": {
     "babel": "^4.7.16",
     "diy-build": "^1.0.8",
-	  "docopt": "*",
+    "docopt": "*",
     "xyz": "*",
     "mocha": "*",
     "chai": "*",
