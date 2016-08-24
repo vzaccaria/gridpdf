@@ -6,10 +6,4 @@ var should = chai.should()
 
 describe( '#module', () => {
   "use strict"
-  it( 'should load the module', () => {
-
-    var mod = require( '..' )
-    should.exist( mod )
-
-  } )
 } )

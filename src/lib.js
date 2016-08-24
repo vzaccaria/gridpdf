@@ -11,8 +11,13 @@ function cm(v) {
 
 var grid = function(r, c, filename, width, opts) {
     "use strict";
+    var griddot = _.get(opts, "griddot", false);
+
     var w = cm(width);
     var h = cm(0.5 * r);
+    if(griddot) {
+        h = cm(0.25 * r);
+    }
     var rw = w / c;
     var rh = h / r;
     var doc = new PDFDocument({
@@ -20,7 +25,6 @@ var grid = function(r, c, filename, width, opts) {
         autoFirstPage: false
     });
 
-    var griddot = _.get(opts, "griddot", false);
 
     function doThis(lambda) {
         var i = 0;
