@@ -1,61 +1,52 @@
 #!/usr/bin/env node
-"use strict";
+let {
+    docopt
+} = require('docopt');
+let _ = require('lodash');
+let fs = require('fs');
+let path = require('path');
+let {
+    grid
+} = require('./lib/lib');
 
-var _require = require("docopt");
-
-var docopt = _require.docopt;
-
-var _ = require("lodash");
-var fs = require("fs");
-var path = require("path");
-
-var _require2 = require("./lib/lib");
-
-var grid = _require2.grid;
-
-var getOptions = function (doc) {
+let getOptions = doc => {
     "use strict";
-    var o = docopt(doc);
-    var nc = parseInt(o.NC) || 40;
-    var nr = parseInt(o.NR) || 15;
-    var w = parseInt(o.WIDTH) || 14.5;
-    var dir = o["--dir"] || undefined;
-    var help = o["--help"] || false;
-    var griddot = o["--griddot"] || false;
+
+    let o = docopt(doc);
+    let nc = parseInt(o['NC']) || 40;
+    let nr = parseInt(o['NR']) || 15;
+    let w = parseInt(o['WIDTH']) || 14.5;
+    let dir = o['--dir'] || undefined;
+    let help = o['--help'] || false;
+    let griddot = o['--griddot'] || false;
     return {
-        help: help, nc: nc, nr: nr, w: w, griddot: griddot, dir: dir
+        help, nc, nr, w, griddot, dir
     };
 };
 
-var doc = fs.readFileSync(__dirname + "/docs/usage.md", "utf8");
+let doc = fs.readFileSync(__dirname + "/docs/usage.md", 'utf8');
 
-var main = function () {
+let main = () => {
     "use strict";
 
-    var _getOptions = getOptions(doc);
-
-    var help = _getOptions.help;
-    var nc = _getOptions.nc;
-    var nr = _getOptions.nr;
-    var w = _getOptions.w;
-    var griddot = _getOptions.griddot;
-    var dir = _getOptions.dir;
-
+    let {
+        help, nc, nr, w, griddot, dir
+    } = getOptions(doc);
     if (!help) {
         if (griddot) {
-            var fn = "griddot_ese_" + nr + "x" + nc + ".pdf";
+            let fn = `griddot_ese_${nr}x${nc}.pdf`;
             if (!_.isUndefined(dir)) {
                 fn = path.join(dir, fn);
             }
             grid(nr, nc, fn, w, { griddot: true });
-            console.log("file:" + fn);
+            console.log(`file:${fn}`);
         } else {
-            var fn = "grid_ese_" + nr + "x" + nc + ".pdf";
+            let fn = `grid_ese_${nr}x${nc}.pdf`;
             if (!_.isUndefined(dir)) {
                 fn = path.join(dir, fn);
             }
             grid(nr, nc, fn, w);
-            console.log("file:" + fn);
+            console.log(`file:${fn}`);
         }
     }
 };
